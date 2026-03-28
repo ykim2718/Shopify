@@ -1,0 +1,67 @@
+{% comment %}
+  (copyLeft) yRocket, Version 0.1.2026.3.28 (since 0.0.2026.3.28)
+  Discount Badge Snippet
+  Required: product
+  Usage:
+    1) product price에서 compare-at price 입력
+    2) snippets/card-product.liquid 수정
+        if card_product.featured_media
+        <div class="card__media ...">
+          render 'my-discount-badge-on-image', product: card_product  ← 여기 삽입
+          <div class="media media--transparent media--hover-effect">
+          <img srcset="...
+  Note: compare-at-price를 사용하면 제품화면의 왼쪽하단에 sale badge가 뜸. 
+      이를 없애기 위해서 아래를 수정해야 함.
+    1) 첫 번째 (card__inner 안쪽)
+        elsif card_product.compare_at_price > card_product.price and card_product.available
+        <span id="NoMediaStandardBadge-{{ section_id }}-{{ card_product.id }}"
+         class="badge badge--bottom-left color-{{ settings.sale_badge_color_scheme }}"
+         style="display:none;"  ← 여기 추가
+         >
+          {{- 'products.product.on_sale' | t -}}
+        </span>
+    2) 두 번째 (card__content 안쪽)
+        elsif card_product.compare_at_price > card_product.price and card_product.available
+        <span id="Badge-{{ section_id }}-{{ card_product.id }}"
+         class="badge badge--bottom-left color-{{ settings.sale_badge_color_scheme }}"
+         style="display:none;"  ← 여기 추가
+         >
+          {{- 'products.product.on_sale' | t -}}
+        </span>
+{% endcomment %}
+
+{% assign var = product.selected_or_first_available_variant %}
+{% assign original_value = var.compare_at_price %}
+{% assign current_value = var.price %}
+
+{% if original_value > 0 and current_value < original_value %}
+  {% assign discount_pct = original_value | minus: current_value | times: 100 | divided_by: original_value | round %}
+  {% if discount_pct > 1 %}
+    <script>
+      if (!document.getElementById('discount-badge-style')) {
+        const style = document.createElement('style');
+        style.id = 'discount-badge-style';
+        style.textContent = `
+          .discount-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 9999;
+            background: #E53E3E;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+            padding: 5px 7px;
+            border-radius: 7px;
+            letter-spacing: 0.04em;
+            pointer-events: none;
+            user-select: none;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    </script>
+    <div class="discount-badge">{{ discount_pct }}% OFF</div>
+  {% endif %}
+{% endif %}
