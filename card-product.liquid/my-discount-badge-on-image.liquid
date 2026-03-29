@@ -1,5 +1,5 @@
 {% comment %}
-  (copyLeft) yRocket, Version 0.2.2026.3.28 (since 0.0.2026.3.28)
+  (copyLeft) yRocket, Version 0.3.2026.3.29 (since 0.0.2026.3.28)
   Discount Badge Snippet
   Required: product
   Usage:
@@ -60,20 +60,38 @@
             
           }
 
-          @keyframes badge-wiggle {
+          @keyframes badge-small-wiggle {
             0%   { transform: translate(0, 0) rotate(0deg); }
-            25%  { transform: translate(-1.5px, 1px) rotate(-5deg); }
-            50%  { transform: translate(1.5px, -1px) rotate(5deg); }
+            25%  { transform: translate(-1.5px, 1px) rotate(-4deg); }
+            50%  { transform: translate(1.5px, -1px) rotate(4deg); }
             75%  { transform: translate(-1px, -1.5px) rotate(-2deg); }
             100% { transform: translate(1px, 1.5px) rotate(2deg); }
           }
 
-          .discount-badge--wiggle {
-            animation: badge-wiggle 1.1s ease-in-out infinite alternate;
+          .discount-badge--small-wiggle {
+            animation: badge-small-wiggle 1.2s ease-in-out infinite alternate;
+          }
+
+          @keyframes badge-big-wiggle {
+            0%   { transform: translate(0, 0) rotate(0deg) scale(0.9); }
+            20%  { transform: translate(-3px, 2px) rotate(-7deg) scale(1.0); }
+            40%  { transform: translate(3px, -2px) rotate(7deg) scale(1.1); }
+            60%  { transform: translate(-2px, -3px) rotate(-3deg) scale(1.0); }
+            80%  { transform: translate(2px, 3px) rotate(3deg) scale(1.0); }
+            100% { transform: translate(0, 0) rotate(0deg) scale(0.9); }
+          }
+
+          .discount-badge--big-wiggle {
+            animation: badge-big-wiggle 1.7s ease-in-out infinite;
+            background: #C0392B;
+            font-size: 13px;
+            padding: 6px 9px;
+            box-shadow: 0 0 8px rgba(192, 57, 43, 0.6);
           }
 
           @media (prefers-reduced-motion: reduce) {
-            .discount-badge--wiggle {
+            .discount-badge--small-wiggle,
+            .discount-badge--big-wiggle {
               animation: none;
             }
           }
@@ -82,8 +100,10 @@
       }
     </script>
 
-    {% if discount_pct >= 20 %}
-      <div class="discount-badge discount-badge--wiggle">{{ discount_pct }}% OFF</div>
+    {% if discount_pct >= 50 %}
+      <div class="discount-badge discount-badge--big-wiggle">{{ discount_pct }}% OFF</div>
+    {% elsif discount_pct >= 20 %}
+      <div class="discount-badge discount-badge--small-wiggle">{{ discount_pct }}% OFF</div>
     {% else %}
       <div class="discount-badge">{{ discount_pct }}% OFF</div>
     {% endif %}
